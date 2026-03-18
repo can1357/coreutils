@@ -599,6 +599,18 @@ fn test_failed_write_is_reported() {
         .stderr_is("cut: write error: No space left on device\n");
 }
 
+#[cfg(target_os = "linux")]
+#[test]
+fn test_failed_read_is_reported_for_newline_delimiter() {
+    use std::time::Duration;
+
+    new_ucmd!()
+        .timeout(Duration::from_secs(2))
+        .args(&["-d", "\n", "-f1", "/proc/self/mem"])
+        .fails()
+        .code_is(1)
+        .no_stdout();
+}
 #[test]
 #[cfg(target_os = "linux")]
 fn test_cut_non_utf8_paths() {
